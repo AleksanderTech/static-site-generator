@@ -6,7 +6,6 @@ Minimalistic Static Site Generator in JavaScript
 
 `npm ci`
 
-
 ## Generate
 
 `npm run generate`

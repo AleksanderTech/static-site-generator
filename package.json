@@ -1,7 +1,7 @@
 {
   "name": "ssg",
   "version": "1.0.0",
-  "description": "",
+  "description": "Minimalistic Static Site Generator in JavaScript",
   "main": "main.js",
   "scripts": {
     "generate": "node main.js"
