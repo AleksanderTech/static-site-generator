@@ -1,0 +1,12 @@
+{
+  "name": "ssg",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "generate": "node main.js"
+  },
+  "dependencies": {
+    "marked": "^4.1.1"
+  }
+}
