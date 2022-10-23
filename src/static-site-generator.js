@@ -12,37 +12,38 @@ function generate(postsDirectory, templatesDirectory, outputDirectory) {
 }
 
 function generatePost(postPath, templatesDirectory, outputDirectory) {
-    // read post written in markdown
+    // 1. read post written in markdown
     let post = fs.readFileSync(postPath, { encoding: 'utf-8' });
 
-    // extract front matter and post content
-    let searchResult = /^(---)(.*?)(---)/s.exec(post);
-    let frontMatter = JSON.parse(searchResult[2]);
+    // 2. extract front matter and post content
+    let searchResult = /^---(.*?)---/s.exec(post);
+    let fMatter = JSON.parse(searchResult[1]);
     let postContent = post.replace(searchResult[0], '');
 
-    // parse post written in markdown to html
+    // 3. parse post written in markdown to html
     let postAsHtml = marked.parse(postContent);
 
-    // read template corresponding to our post
-    let template = fs.readFileSync(path.join(templatesDirectory, frontMatter.template), { encoding: 'utf-8' });
+    // 4. read template corresponding to our post
+    let template = fs.readFileSync(path.join(templatesDirectory, fMatter.template), { encoding: 'utf-8' });
 
-    // replace variables from template with corresponding values
-    let result = replaceVariables(template, 
-        { title: frontMatter.title, author: frontMatter.author, createdAt: frontMatter.createdAt, content: postAsHtml });
+    // 5. replace variables from template with corresponding values
+    let staticWebPage = replaceVariables(
+        template,
+        { title: fMatter.title, author: fMatter.author, createdAt: fMatter.createdAt, content: postAsHtml }
+    );
 
-    // create output directory if does not exist
+    // 6. create output directory if does not exist
     if (!fs.existsSync(outputDirectory)) fs.mkdirSync(outputDirectory, { recursive: true });
 
-    // write html result  
-    let outputPath = path.join(outputDirectory, `${path.parse(postPath).name}.html`);
-    fs.writeFileSync(outputPath, result);
+    // 7. save html result to output directory
+    fs.writeFileSync(path.join(outputDirectory, `${path.parse(postPath).name}.html`), staticWebPage);
 }
 
 function replaceVariables(template, data) {
-    let matches = template.matchAll(/(\{\{)(.*?)(\}\})/g);
+    let matches = template.matchAll(/\{\{(.*?)\}\}/g);
 
     for (let match of matches) {
-        let dataName = match[2];
+        let dataName = match[1];
         let dataValue = data[dataName];
 
         if (!dataValue) throw new Error(`Variable with name "${dataName}" has not been provided`);
